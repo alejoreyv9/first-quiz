@@ -1,4 +1,4 @@
-import pets_db
+import sqlite3
 
 ################################################################################
 #     ____                          __     _                          __ __
@@ -22,11 +22,23 @@ import pets_db
 # Write SQL to select the pets that are owned by nobody.
 # The output should be a list of tuples in the format: (<pet name>, <species>, <age>)
 
+conn = sqlite3.connect('quiz_pets')
+
+
 sql_pets_owned_by_nobody = """
 
-Your SQL here.
+
+SELECT name, species, age FROM animals WHERE animal_id NOT IN (SELECT pet_id FROM people_animals);
 
 """
+
+cursor = conn.cursor()
+cursor.execute(sql_pets_owned_by_nobody)
+resultsA = cursor.fetchall()
+print("Las Mascotas Sin Dueños:")
+for row in resultsA:
+    print(row)
+
 
 # Part 4.B:
 # Write SQL to select how the number of pets are older than their owners. 
@@ -34,15 +46,40 @@ Your SQL here.
 
 sql_pets_older_than_owner = """
 
-Your SQL here.
+
+
+SELECT COUNT(*) FROM animals a JOIN people_animals
+pa ON a.animal_id = pa.pet_id JOIN people p ON pa.owner_id = p.person_id WHERE a.age > p.age;
 
 """
+
+cursor.execute(sql_pets_older_than_owner)
+resultsB = cursor.fetchone()
+print("El numero de las mascotas mas viejas que sus dueños: ", resultsB[0])
+
 
 # Part 4.C: BONUS CHALLENGE! 
 # Write SQL to select the pets that are owned by Bessie and nobody else.
 # The output should be a list of tuples in the format: (<person name>, <pet name>, <species>)
-sql_only_owned_by_bessie = """ 
+sql_only_owned_by_bessie = """
 
-Your SQL here.
+
+SELECT p.name as owner_name, a.name as pet_name, a.species FROM animals a JOIN people_animals pa ON a.animal_id = pa.pet_id JOIN people p ON pa.owner_id = p.person_id
+WHERE p.name = 'bessie' AND a.animal_id NOT IN (
+   SELECT pet_id
+   FROM people_animals
+   WHERE owner_id != p.person_id
+);
+
 
 """
+
+
+cursor.execute(sql_pets_owned_by_nobody)
+resultsC = cursor.fetchall()
+print("Las Mascotas de la propiedad de Bessie y de nadie mas: ")
+for row in resultsC:
+ print(row)
+
+
+ conn.close()
