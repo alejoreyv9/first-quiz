@@ -25,7 +25,7 @@ public class Question6Test {
   public void drinkNotFree() {
     VendingMachine vm = VendingMachineImpl.getInstance();
 
-    Exception exception = assertThrows(NotEnoughMoneyException.class, () -> {
+    assertThrows(NotEnoughMoneyException.class, () -> {
       vm.pressButton("ScottCola");
     });
   }
@@ -39,7 +39,7 @@ public class Question6Test {
     vm.insertQuarter();
 
     Drink drink = vm.pressButton("ScottCola");
-    
+
     assertTrue(drink.isFizzy());
     assertEquals(drink.getName(), "ScottCola");
   }
@@ -54,7 +54,7 @@ public class Question6Test {
     Drink drink = vm.pressButton("ScottCola");
     assertNotNull(drink);
 
-    Exception exception = assertThrows(NotEnoughMoneyException.class, () -> {
+    assertThrows(NotEnoughMoneyException.class, () -> {
       vm.pressButton("ScottCola");
     });
   }
